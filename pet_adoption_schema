@@ -1,0 +1,543 @@
+SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS; -- Save the current state of foreign key checks
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP DATABASE IF EXISTS Pet_Adoption_and_Rescue;
+CREATE DATABASE Pet_Adoption_and_Rescue;
+USE Pet_Adoption_and_Rescue;
+
+DROP TABLE IF EXISTS Pets;
+CREATE TABLE Pets (
+	Pet_ID INT AUTO_INCREMENT PRIMARY KEY,
+	Name VARCHAR(20),
+	Species VARCHAR(50), -- dog, cat, etc.
+	Breed VARCHAR(50),
+	Age INT,
+	Weight DECIMAL(10,2),
+	Color VARCHAR(20),
+	Gender VARCHAR(10),
+	Adoptable_Status VARCHAR(20), -- adoptable, under obsv., adopted, etc.
+	Admission_Date DATE,
+    Exit_Date DATE,
+	Photo_URL VARCHAR(50)
+);
+
+INSERT INTO Pets (Name, Species, Breed, Age, Weight, Color, Gender, Adoptable_Status, Admission_Date, Exit_Date, Photo_URL)
+VALUES
+('Bella', 'Dog', 'Labrador', 3, 66.00, 'Yellow', 'Female', 'Adopted', '2024-10-01', '2024-11-01', 'url1.jpg'),
+('Max', 'Dog', 'Beagle', 2, 26.50, 'Brown', 'Male', 'Adopted', '2024-09-15', '2024-10-15', 'url2.jpg'),
+('Whiskers', 'Cat', 'Siamese', 4, 8.81, 'Cream', 'Female', 'Adopted', '2024-08-20', '2024-09-20', 'url3.jpg'),
+('Sparky', 'Dog', 'Poodle', 1, 17.50, 'White', 'Male', 'Adoptable', '2024-09-25', NULL, 'url4.jpg'),
+('Luna', 'Dog', 'Husky', 2, 61.50, 'Gray', 'Female', 'Under Observation', '2024-07-11', NULL, 'url5.jpg'),
+('Ginger', 'Cat', 'Tabby', 3, 11.00, 'Orange', 'Male', 'Adoptable', '2024-06-28', NULL, 'url6.jpg'),
+('Daisy', 'Dog', 'Border Collie', 5, 39.63, 'Black & White', 'Female', 'Adoptable', '2024-05-30', NULL, 'url7.jpg'),
+('Leo', 'Cat', 'Maine Coon', 6, 22.00, 'Brown', 'Male', 'Adopted', '2024-10-03', '2024-11-03', 'url8.jpg'),
+('Rocky', 'Dog', 'Boxer', 4, 55.50, 'Fawn', 'Male', 'Adoptable', '2024-04-20', NULL, 'url9.jpg'),
+('Smokey', 'Cat', 'British Shorthair', 2, 13.25, 'Gray', 'Female', 'Adopted', '2024-09-30', '2024-10-30', 'url10.jpg');
+
+DROP TABLE IF EXISTS Pet_Profile; 
+CREATE TABLE Pet_Profile (
+	Pet_Profile_ID INT AUTO_INCREMENT Primary Key,
+	Pet_ID INT, 
+	Temperament VARCHAR(25), -- friendly, shy, energetic, etc.
+	Special_Needs VARCHAR(50), -- dietary, medication, disabilities
+	Medical_Notes VARCHAR(100), -- any behavioral or health notes
+	Trainability_Level VARCHAR(25), -- easy, moderate, difficult
+	Good_With_Children BOOL, -- yes, no
+	Good_With_Other_Pets BOOL, -- yes, no
+	Ideal_Home_Type VARCHAR(50), -- apartment, house w backyard
+	FOREIGN KEY (Pet_ID) REFERENCES Pets(Pet_ID)
+);
+
+INSERT INTO Pet_Profile (Pet_ID, Temperament, Special_Needs, Medical_Notes, Trainability_Level, Good_With_Children, Good_With_Other_Pets, Ideal_Home_Type)
+VALUES
+(1, 'Friendly', 'None', 'Healthy, up-to-date on all vaccinations', 'Easy', TRUE, TRUE, 'House with backyard'),
+(2, 'Energetic', 'None', 'No major health concerns, mild allergies', 'Moderate', TRUE, TRUE, 'House with backyard'),
+(3, 'Friendly', 'None', 'Spayed, up-to-date on all vaccinations', 'Easy', TRUE, TRUE, 'Apartment'),
+(4, 'Energetic', 'None', 'Healthy, no issues', 'Easy', TRUE, TRUE, 'House with backyard'),
+(5, 'Shy', 'Ear infection (treatment ongoing)', 'Mild ear infection being treated', 'Moderate', FALSE, TRUE, 'Apartment'),
+(6, 'Playful', 'None', 'No health concerns, neutered', 'Easy', TRUE, TRUE, 'House with backyard'),
+(7, 'Affectionate', 'None', 'Healthy, no issues', 'Easy', TRUE, TRUE, 'House with backyard'),
+(8, 'Calm', 'None', 'Healthy, calm disposition', 'Easy', TRUE, FALSE, 'Apartment'),
+(9, 'Friendly', 'None', 'Healthy, up-to-date on vaccinations', 'Moderate', TRUE, TRUE, 'House with backyard'),
+(10, 'Shy', 'Asthma (no ongoing treatment)', 'Mild asthma, no treatment needed', 'Moderate', TRUE, TRUE, 'Apartment');
+
+DROP TABLE IF EXISTS Staff;
+CREATE TABLE Staff (
+    Staff_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Shelter_ID INT,
+    Name VARCHAR(50),
+    Role VARCHAR(50), -- Volunteer, Employee, Manager, etc.
+    Phone VARCHAR(25),
+    Email VARCHAR(50),
+    Start_Date DATE,
+    Status VARCHAR(20), -- Active, Inactive
+    FOREIGN KEY (Shelter_ID) REFERENCES Shelter(Shelter_ID)
+);
+
+INSERT INTO Staff (Name, Role, Phone, Email, Start_Date, Status)
+VALUES
+('Alice Johnson', 'Employee', '217-555-1001', 'alice.johnson@example.com', '2022-03-01', 'Active'),
+('Bob Smith', 'Volunteer', '312-555-2002', 'bob.smith@example.com', '2023-06-15', 'Active'),
+('Charlie Davis', 'Manager', '630-555-3003', 'charlie.davis@example.com', '2021-01-20', 'Active'),
+('Dana Miller', 'Volunteer', '847-555-4004', 'dana.miller@example.com', '2023-08-12', 'Active'),
+('Evelyn Brown', 'Employee', '217-555-5005', 'evelyn.brown@example.com', '2021-11-05', 'Active'),
+('Frank Wilson', 'Volunteer', '312-555-6006', 'frank.wilson@example.com', '2023-09-01', 'Inactive'),
+('Grace Lee', 'Employee', '630-555-7007', 'grace.lee@example.com', '2022-05-18', 'Active'),
+('Henry King', 'Volunteer', '847-555-8008', 'henry.king@example.com', '2022-10-10', 'Active'),
+('Ivy Clark', 'Employee', '217-555-9009', 'ivy.clark@example.com', '2023-01-01', 'Active'),
+('Jack White', 'Manager', '312-555-1010', 'jack.white@example.com', '2020-12-15', 'Active');
+
+DROP TABLE IF EXISTS Employees;
+CREATE TABLE Employees (
+    Employee_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Staff_ID INT,
+    Department VARCHAR(50), -- Animal Care, Administration, etc.
+    Salary DECIMAL(10, 2),
+    Full_Time BOOL, -- TRUE for full-time, FALSE for part-time
+    FOREIGN KEY (Staff_ID) REFERENCES Staff(Staff_ID)
+);
+
+INSERT INTO Employees (Staff_ID, Department, Salary, Full_Time)
+VALUES
+(1, 'Animal Care', 35000.00, TRUE),
+(2, 'Veterinary', 60000.00, TRUE),
+(3, 'Administration', 50000.00, TRUE),
+(4, 'Adoptions', 38000.00, TRUE),
+(5, 'Adoption Services', 32000.00, TRUE),
+(6, 'Animal Training', 37000.00, TRUE),
+(7, 'Animal Care', 36000.00, TRUE),
+(8, 'Reception', 30000.00, FALSE),
+(9, 'Marketing', 39000.00, FALSE),
+(10, 'Volunteer Coordination', 34000.00, FALSE);
+
+DROP TABLE IF EXISTS Volunteers;
+CREATE TABLE Volunteers (
+    Volunteer_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Staff_ID INT,
+    Availability VARCHAR(50), -- Weekdays, Weekends, etc.
+    Hours_Per_Week DECIMAL(4, 1),
+    Special_Skills VARCHAR(100), -- Animal Handling, Fundraising, etc.
+    FOREIGN KEY (Staff_ID) REFERENCES Staff(Staff_ID)
+);
+
+INSERT INTO Volunteers (Staff_ID, Availability, Hours_Per_Week, Special_Skills)
+VALUES
+(1, 'Weekdays', 4.0, 'Animal Handling'),
+(2, 'Weekends', 5.0, 'Animal Handling'),
+(3, 'Weekends', 12.0, 'Pet Training'),
+(4, 'Weekdays', 8.0, 'Fundraising'),
+(5, 'Weekends', 15.0, 'Database Management'),
+(6, 'Weekdays', 4.0, 'Cleaning'),
+(7, 'Weekdays', 8.0, 'Graphic Design'),
+(8, 'Weekends', 6.0, 'Event Coordination'),
+(9, 'Weekends', 5.0, 'Social Media Manager'),
+(10, 'Weekdays', 10.0, 'Public Relations');
+
+DROP TABLE IF EXISTS Adopters;
+CREATE TABLE Adopters (
+    Adopter_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(50),
+    Phone VARCHAR(25),
+    Email VARCHAR(50),
+    Address VARCHAR(100),
+    Adoption_Date DATE
+);
+
+INSERT INTO Adopters (Name, Phone, Email, Address, Adoption_Date)
+VALUES
+('John Doe', '217-555-1010', 'john.doe@example.com', '123 Maple St, Springfield, IL', '2024-11-01'),
+('Jane Smith', '312-555-2020', 'jane.smith@example.com', '456 Oak St, Chicago, IL', '2024-11-02'),
+('Emily Clark', '630-555-3030', 'emily.clark@example.com', '789 Pine St, Naperville, IL', '2024-11-03'),
+('Michael Brown', '847-555-4040', 'michael.brown@example.com', '101 Cedar St, Aurora, IL', '2024-11-04'),
+('Sarah White', '815-555-5050', 'sarah.white@example.com', '202 Birch St, Joliet, IL', '2024-11-05'),
+('David Harris', '847-555-6060', 'david.harris@example.com', '303 Elm St, Elgin, IL', '2024-11-06'),
+('Rachel Green', '312-555-7070', 'rachel.green@example.com', '404 Walnut St, Chicago, IL', '2024-11-07'),
+('Chris Taylor', '630-555-8080', 'chris.taylor@example.com', '505 Chestnut St, Naperville, IL', '2024-11-08'),
+('Jessica Lewis', '217-555-9090', 'jessica.lewis@example.com', '606 Spruce St, Springfield, IL', '2024-11-09'),
+('Frank Wilson', '815-555-1011', 'frank.wilson@example.com', '707 Fir St, Dekalb, IL', '2024-11-10');
+
+DROP TABLE IF EXISTS Adopters_Profile;
+CREATE TABLE Adopters_Profile (
+    Adopter_Profile_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Adopter_ID INT,
+    Preferred_Species VARCHAR(50), -- e.g., Dog, Cat, etc.
+    Preferred_Breed VARCHAR(50), -- Specific breed preference
+    Home_Type VARCHAR(50), -- e.g., Apartment, House with backyard
+    Experience_Level VARCHAR(50), -- e.g., First-time, Experienced
+    Has_Children BOOL, -- TRUE if children are present in the home
+    Other_Pets BOOL, -- TRUE if other pets are in the household
+    Activity_Level VARCHAR(50), -- e.g., Low, Moderate, High
+    FOREIGN KEY (Adopter_ID) REFERENCES Adopters(Adopter_ID)
+);
+
+-- Insert 10 sample records into Adopters_Profile
+INSERT INTO Adopters_Profile (Adopter_ID, Preferred_Species, Preferred_Breed, Home_Type, Experience_Level, Has_Children, Other_Pets, Activity_Level)
+VALUES
+(1, 'Dog', 'Labrador', 'House with backyard', 'Experienced', TRUE, TRUE, 'High'),
+(2, 'Cat', 'Siamese', 'Apartment', 'First-time', FALSE, TRUE, 'Low'),
+(3, 'Dog', 'Beagle', 'House with backyard', 'Experienced', TRUE, FALSE, 'Moderate'),
+(4, 'Cat', 'Maine Coon', 'Apartment', 'First-time', TRUE, TRUE, 'Low'),
+(5, 'Dog', 'Border Collie', 'House with backyard', 'Experienced', FALSE, TRUE, 'High'),
+(6, 'Cat', 'British Shorthair', 'Apartment', 'Experienced', TRUE, FALSE, 'Moderate'),
+(7, 'Dog', 'Poodle', 'House with backyard', 'First-time', FALSE, FALSE, 'High'),
+(8, 'Cat', 'Tabby', 'Apartment', 'Experienced', FALSE, TRUE, 'Low'),
+(9, 'Dog', 'Boxer', 'House with backyard', 'Experienced', TRUE, TRUE, 'Moderate'),
+(10, 'Cat', 'Persian', 'Apartment', 'First-time', TRUE, FALSE, 'Low');
+
+DROP TABLE IF EXISTS Health_History; 
+CREATE TABLE Health_History (
+    Record_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Pet_ID INT,
+    Visit_Date DATE,
+    Vaccination_Status VARCHAR(50),
+    Vaccination_Type VARCHAR(100),
+    Veterinarian VARCHAR(50),
+    FOREIGN KEY (Pet_ID) REFERENCES Pets(Pet_ID)
+);
+
+INSERT INTO Health_History (Pet_ID, Visit_Date, Vaccination_Status, Vaccination_Type, Veterinarian)
+VALUES
+(1, '2024-10-01', 'Vaccinated', 'Rabies', 'Dr. Jones'),
+(2, '2024-10-02', 'Vaccinated', 'Distemper', 'Dr. Patel'),
+(3, '2024-10-03', 'Non-Vaccinated', 'Rabies', 'Dr. Carter'),
+(4, '2024-10-04', 'Vaccinated', 'Parvovirus', 'Dr. Smith'),
+(5, '2024-10-05', 'Non-Vaccinated', 'Rabies', 'Dr. Lee'),
+(6, '2024-10-06', 'Non-Vaccinated', 'Feline Calicivirus', 'Dr. Carter'),
+(7, '2024-10-07', 'Vaccinated', 'Adenovirus', 'Dr. Patel'),
+(8, '2024-10-08', 'Vaccinated', 'Rabies', 'Dr. Jones'),
+(9, '2024-10-09', 'Vaccinated', 'Distemper', 'Dr. Lee'),
+(10, '2024-10-10', 'Non-Vaccinated', 'Feline Calicivirus', 'Dr. Carter');
+
+DROP TABLE IF EXISTS Shelter;
+CREATE TABLE Shelter (
+	Shelter_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Pet_ID INT,
+	Shelter_Name VARCHAR(50),
+	Location VARCHAR(100),
+	Capacity INT,
+	Current_Capacity INT,
+	Contact_Number VARCHAR(25),
+	Email VARCHAR(50),
+	Website VARCHAR(100),
+	Year_Established YEAR,
+	Operating_Hours VARCHAR(25),
+	Donation_Received DECIMAL(10,2),
+    FOREIGN KEY (Pet_ID) REFERENCES Pets(Pet_ID)
+);
+
+INSERT INTO Shelter (Pet_ID, Shelter_Name, Location, Capacity, Current_Capacity, Contact_Number, Email, Website, Year_Established, Operating_Hours, Donation_Received) VALUES 
+(1, 'Happy Paws Shelter', '123 Pet Lane, Suite 101, Springfield, IL 62701', 50, 35, '217-555-0101', 'info@happypaws.org', 'www.happypaws.org', 2015, '9 AM - 6 PM Mon-Fri', 12000.00), 
+(2, 'Pawfect Match Rescue', '456 Bark St, Apt 10, Chicago, IL 60601', 75, 40, '312-555-0234', 'contact@pawfectmatch.org', 'www.pawfectmatch.org', 2010, '10 AM - 5 PM Daily', 8500.00), 
+(3, 'Furry Friends Haven', '789 Woof Way, Naperville, IL 60563', 60, 50, '630-555-0456', 'support@furryhaven.org', 'www.furryhaven.org', 2012, '8 AM - 7 PM Mon-Sun', 9000.00), 
+(4, 'Tail Waggers Shelter', '321 Leash Rd, Suite 3, Aurora, IL 60505', 40, 30, '630-555-0789', 'info@tailwaggers.org', 'www.tailwaggers.org', 2008, '9 AM - 5 PM Mon-Fri', 10000.00), 
+(5, 'Paws & Claws Shelter', '654 Animal St, Suite 12, Joliet, IL 60431', 90, 70, '815-555-0910', 'pawsandclaws@rescue.org', 'www.pawsandclaws.org', 2014, '9 AM - 6 PM Mon-Sat', 11000.00),
+(6, 'The Rescue Haven', '1234 Fur Blvd, Elgin, IL 60123', 55, 40, '847-555-1345', 'info@therescuehaven.org', 'www.therescuehaven.org', 2011, '8 AM - 6 PM Mon-Sun', 9500.00), 
+(7, 'Second Chance Shelter', '567 Pet Alley, Unit 5, Dekalb, IL 60115', 45, 35, '815-555-2345', 'secondchance@shelter.org', 'www.secondchance.org', 2013, '10 AM - 7 PM Mon-Sun', 8700.00), 
+(8, 'New Beginnings Shelter', '135 Rescue Rd, Rockford, IL 61101', 80, 60, '815-555-4567', 'info@newbeginnings.org', 'www.newbeginnings.org', 2017, '9 AM - 6 PM Daily', 9500.00), 
+(9, 'Animal Angels Rescue', '234 Hope St, Apt 3, Peoria, IL 61602', 60, 50, '309-555-7890', 'info@animalangels.org', 'www.animalangels.org', 2009, '9 AM - 5 PM Mon-Sat', 10000.00), 
+(10, 'Forever Homes Shelter', '876 Pet Plaza, Champaign, IL 61820', 70, 50, '217-555-0123', 'contact@foreverhomes.org', 'www.foreverhomes.org', 2016, '9 AM - 6 PM Mon-Fri', 10500.00);
+
+DROP TABLE IF EXISTS Adoption_Process;
+CREATE TABLE Adoption_Process (
+    Process_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Adopter_ID INT,
+    Pet_ID INT,
+    Application_Date DATE,
+    Status VARCHAR(20), -- Pending, Approved, Denied
+    Adoption_Date DATE,
+    Notes TEXT,
+    FOREIGN KEY (Adopter_ID) REFERENCES Adopters(Adopter_ID),
+    FOREIGN KEY (Pet_ID) REFERENCES Pets(Pet_ID)
+);
+
+INSERT INTO Adoption_Process (Adopter_ID, Pet_ID, Application_Date, Status, Adoption_Date, Notes)
+VALUES
+(1, 1, '2023-08-01', 'Approved', '2024-01-01', 'Adoption successful'),
+(2, 2, '2024-02-02', 'Pending', NULL, 'Home visit scheduled'),
+(3, 3, '2024-12-03', 'Denied', NULL, 'Adopter did not meet requirements'),
+(4, 4, '2024-10-04', 'Approved', '2024-11-04', 'Adoption successful'),
+(5, 5, '2024-09-05', 'Pending', NULL, 'Background check ongoing'),
+(6, 6, '2024-06-06', 'Approved', '2024-11-06', 'Adoption successful'),
+(7, 7, '2024-07-07', 'Denied', NULL, 'Adopter withdrew application'),
+(8, 8, '2024-03-08', 'Pending', NULL, 'Adopter waiting on additional documents'),
+(9, 9, '2023-10-09', 'Approved', '2024-04-09', 'Adoption successful'),
+(10, 10, '2023-10-10', 'Approved', '2024-03-10', 'Adoption successful');
+
+DROP TABLE IF EXISTS Donations;
+CREATE TABLE Donations (
+    Donation_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Shelter_ID INT, 
+    Donor_Name VARCHAR(100),
+    Donation_Amount DECIMAL(10, 2),
+    Donation_Date DATE,
+    Donation_Type VARCHAR(50), 
+    Donation_Description TEXT,
+    Payment_Method VARCHAR(50), 
+    Donor_Contact VARCHAR(100),
+    FOREIGN KEY (Shelter_ID) REFERENCES Shelter(Shelter_ID)
+);
+
+INSERT INTO Donations (Shelter_ID, Donor_Name, Donation_Amount, Donation_Date, Donation_Type, Donation_Description, Payment_Method, Donor_Contact)
+VALUES 
+(1, 'Aban Abbas', 500.00, '2024-11-15', 'Monetary', 'General donation for shelter operations', 'Credit Card', 'abanabbas@gmail.com'),
+(2, 'Thomas Shelby', 300.00, '2024-11-16', 'Monetary', 'Donation for animal medical care', 'PayPal', 'shelby@gmail.com'),
+(3, 'Mark Johnson', 200.00, '2024-11-17', 'Supplies', 'Food and bedding for dogs', 'Check', 'mark.johnson@gmail.com'),
+(4, 'Emily Davis', 150.00, '2024-11-18', 'Monetary', 'Donation to help with adoption fees', 'Credit Card', 'emily.davis@example.com'),
+(5, 'Michael Lee', 100.00, '2024-11-19', 'Supplies', 'Toys and grooming supplies', 'Credit Card', 'michael.lee@example.com'),
+(6, 'Sarah Brown', 400.00, '2024-11-20', 'Monetary', 'Donation for pet health and surgeries', 'PayPal', 'sarah.brown@example.com'),
+(7, 'Chris White', 250.00, '2024-11-21', 'Monetary', 'General donation for shelter improvements', 'Credit Card', 'chris.white@example.com'),
+(8, 'Rachel Green', 350.00, '2024-11-22', 'Supplies', 'Leashes and food for cats', 'Check', 'rachel.green@example.com'),
+(9, 'David Harris', 500.00, '2024-11-23', 'Monetary', 'Donation to help with adoption process and fees', 'PayPal', 'david.harris@example.com'),
+(10, 'Jessica Lewis', 250.00, '2024-11-24', 'Monetary', 'Donation for vaccinations and medical treatments', 'Credit Card', 'jessica.lewis@example.com');
+ 
+DROP TABLE IF EXISTS Supplies; 
+ CREATE TABLE Supplies (
+    Supply_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Shelter_ID INT,
+    Item_Name VARCHAR(50),
+    Quantity INT,
+    Last_Updated DATE,
+    FOREIGN KEY (Shelter_ID) REFERENCES Shelter(Shelter_ID)
+);
+
+INSERT INTO Supplies (Shelter_ID, Item_Name, Quantity, Last_Updated)
+VALUES
+(1, 'Dog Food', 50, '2024-11-01'),
+(2, 'Cat Food', 40, '2024-11-02'),
+(3, 'Litter Boxes', 30, '2024-11-03'),
+(4, 'Leashes', 20, '2024-11-04'),
+(5, 'Collars', 25, '2024-11-05'),
+(6, 'Bedding', 15, '2024-11-06'),
+(7, 'Toys', 60, '2024-11-07'),
+(8, 'Grooming Supplies', 35, '2024-11-08'),
+(9, 'Vaccines', 10, '2024-11-09'),
+(10, 'Cleaning Supplies', 45, '2024-11-10');
+
+DROP TABLE IF EXISTS Foster_Homes;
+CREATE TABLE Foster_Homes (
+    Foster_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Shelter_ID INT,
+    Pet_ID INT,
+    Foster_Name VARCHAR(50),
+    Start_Date DATE,
+    End_Date DATE,
+    Notes TEXT,
+    FOREIGN KEY (Shelter_ID) REFERENCES Shelter(Shelter_ID),
+    FOREIGN KEY (Pet_ID) REFERENCES Pets(Pet_ID)
+);
+
+INSERT INTO Foster_Homes (Shelter_ID, Pet_ID, Foster_Name, Start_Date, End_Date, Notes)
+VALUES
+(1, 1, 'Alice Walker', '2024-10-01', '2024-10-15', 'Successful fostering period'),
+(2, 2, 'Bob Stone', '2024-10-05', '2024-10-20', 'Pet adjusted well to home environment'),
+(3, 3, 'Cathy Woods', '2024-10-10', '2024-10-25', 'Foster period extended'),
+(4, 4, 'David Parks', '2024-10-15', NULL, 'Ongoing foster care'),
+(5, 5, 'Emily Lake', '2024-10-20', '2024-10-30', 'Pet recovered from health issue'),
+(6, 6, 'Frank Hill', '2024-10-25', NULL, 'Foster home reported positive feedback'),
+(7, 7, 'Grace River', '2024-10-30', NULL, 'Ongoing foster care'),
+(8, 8, 'Hank Green', '2024-11-01', NULL, 'Adoption interest expressed by foster'),
+(9, 9, 'Ivy Scott', '2024-11-05', '2024-11-20', 'Fostering ended early due to personal reasons'),
+(10, 10, 'Jack White', '2024-11-10', NULL, 'Potential adopter in foster home'); 
+
+/*KPIs*/
+
+-- Create a view to calculate the average duration spent at the shelter
+DROP VIEW IF EXISTS AverageShelterDuration;
+CREATE VIEW AverageShelterDuration AS 
+SELECT 
+    AVG(DATEDIFF(Exit_Date, Admission_Date)) AS AverageDurationInDays
+FROM 
+    Pets
+WHERE 
+    Adoptable_Status = 'Adopted';
+
+SELECT * FROM AverageShelterDuration;
+
+-- Adoptions per month
+DROP VIEW IF EXISTS AdoptionsPerMonth;
+CREATE VIEW AdoptionsPerMonth AS
+SELECT 
+    DATE_FORMAT(Adoption_Date, '%Y-%m') AS Month,
+    COUNT(*) AS Adoptions
+FROM Adoption_Process
+WHERE Adoption_Date IS NOT NULL
+GROUP BY DATE_FORMAT(Adoption_Date, '%Y-%m')
+ORDER BY Month;
+
+SELECT * FROM AdoptionsPerMonth;
+
+-- Pet intake 
+CREATE VIEW PetIntakeMonthly AS 
+SELECT 
+    MONTH(Admission_Date) AS Month,
+    YEAR(Admission_Date) AS Year,
+    COUNT(*) AS PetIntakeCount
+FROM Pets
+GROUP BY YEAR(Admission_Date), MONTH(Admission_Date);
+
+SELECT * FROM PetIntakeMonthly;
+
+-- Pet Health
+DROP VIEW IF EXISTS VaccinationCompliance;
+CREATE VIEW VaccinationCompliance AS
+SELECT 
+    (COUNT(*) * 100.0 / 
+     (SELECT COUNT(*) FROM Health_History)) AS VaccinationCompliancePercentage
+FROM Health_History
+WHERE Vaccination_Status = 'Vaccinated';
+
+SELECT * FROM VaccinationCompliance;
+
+/*Triggers*/
+-- Automatic Vaccination Status Updates
+-- Purpose: Ensures a pet's profile reflects its most recent vaccination status.
+-- Action: When a new vaccination is recorded in the Health History, the pet's adoptable status field in Pets is automatically updated.
+DROP TRIGGER IF EXISTS Update_Adoptable_Status_on_Vaccination;
+
+DELIMITER $$
+
+CREATE TRIGGER Update_Adoptable_Status_on_Vaccination
+AFTER UPDATE ON Health_History
+FOR EACH ROW 
+BEGIN 
+	IF NEW.Vaccination_Status = 'Vaccinated' THEN
+		UPDATE Pets
+		SET Adoptable_Status = 'Adoptable'
+		WHERE Pet_ID = NEW.Pet_ID;
+	END IF;
+END; $$
+
+DELIMITER ;
+
+UPDATE Pets SET Adoptable_Status = 'Adoptable' WHERE Pet_ID = 5;
+SELECT * FROM Pets; 
+
+-- Monitoring Adoption Status
+-- Automatically updates a pet’s availability status when an adoption request is approved.
+-- Action: When an adoption request is marked as "Approved," the pet's status changes to "Adopted."
+DROP TRIGGER IF EXISTS update_pet_status_on_adoption;
+
+DELIMITER $$
+
+CREATE TRIGGER update_pet_status_on_adoption
+AFTER UPDATE ON Adoption_Process
+FOR EACH ROW
+BEGIN
+  IF NEW.Status = 'Approved' THEN
+    UPDATE Pets
+    SET Adoptable_Status = 'Adopted' -- AND Adoption_Date = CURRENT_DATE() AND Notes = 'Adoption Successful'
+    WHERE Pet_ID = NEW.Pet_ID;
+  END IF;
+END; $$
+
+DELIMITER ;
+
+UPDATE Adoption_Process SET Adoption_Status = 'Approved' WHERE Pet_ID = 2;
+UPDATE Adoption_Process SET Notes = 'Adoption Successful';
+select * from adoption_process;
+
+-- Trigger to Update Shelter Capacity When a Pet is Adopted
+DROP TRIGGER IF EXISTS Capacity_After_Pet_Adoption;
+
+DELIMITER $$
+
+CREATE TRIGGER Capacity_After_Pet_Adoption
+AFTER UPDATE ON Pets
+FOR EACH ROW
+BEGIN
+    IF NEW.Adoptable_Status = 'Adopted' AND OLD.Adoptable_Status != 'Adopted' THEN
+        UPDATE Shelter
+        SET Current_Capacity = Current_Capacity - 1
+        WHERE Shelter_ID = (SELECT Shelter_ID FROM Foster_Homes WHERE Pet_ID = NEW.Pet_ID LIMIT 1);
+    END IF;
+END$$
+
+DELIMITER ;
+
+UPDATE Shelter SET Current_Capacity = Current_Capacity - 1 WHERE Pet_ID = 1;
+SELECT * FROM Shelter;
+
+-- Table for After_High_Donations Trigger
+DROP TABLE IF EXISTS High_Value_Donations;
+CREATE TABLE High_Value_Donations (
+	HV_Dontations_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Donation_ID INT,
+    Donor_Name VARCHAR(100),
+    Donation_Amount DECIMAL(10, 2),
+    Donation_Date DATE,
+    FOREIGN KEY (Donation_ID) REFERENCES Donations(Donation_ID)
+);
+
+-- Trigger to Log Donations Exceeding $1000
+DROP TRIGGER IF EXISTS After_High_Donation;
+
+DELIMITER $$
+
+CREATE TRIGGER After_High_Donation
+AFTER INSERT ON Donations
+FOR EACH ROW
+BEGIN
+    IF NEW.Donation_Amount > 1000 THEN
+        INSERT INTO High_Value_Donations (Donation_ID, Donor_Name, Donation_Amount, Donation_Date)
+        VALUES (NEW.Donation_ID, NEW.Donor_Name, NEW.Donation_Amount, NEW.Donation_Date);
+    END IF;
+END$$
+
+DELIMITER ;
+
+INSERT INTO Donations (Donation_ID, Donor_Name, Donation_Amount, Donation_Date) VALUES
+(11, 'Bruce Wayne', 1500.00, '2024-05-12');
+SELECT * FROM Donations WHERE Donation_Amount > 1000;
+SELECT * FROM High_Value_Donations;
+
+/*Stored Procedure*/
+-- Recommend Pets for Adoption
+-- Purpose: This procedure takes an adopter’s preferences (such as preferred breed, age range, and temperament) and returns a list of pets matching the criteria.
+-- Ensure any existing procedure is removed
+DROP PROCEDURE IF EXISTS RecommendPetsForAdoption;
+
+DELIMITER $$
+
+-- Create the new stored procedure
+CREATE PROCEDURE RecommendPetsForAdoption (
+    IN PreferredSpecies VARCHAR(50),
+    IN PreferredBreed VARCHAR(50),
+    IN MinAge INT,
+    IN MaxAge INT,
+    IN PreferredTemperament VARCHAR(25)
+)
+BEGIN
+    SELECT 
+        Pets.Pet_ID,
+        Pets.Name,
+        Pets.Species,
+        Pets.Breed,
+        Pets.Age,
+        Pets.Weight,
+        Pets.Color,
+        Pets.Gender,
+        Pets.Adoptable_Status,
+        Pet_Profile.Temperament,
+        Pet_Profile.Trainability_Level,
+        Pet_Profile.Good_With_Children,
+        Pet_Profile.Good_With_Other_Pets
+    FROM 
+        Pets
+    INNER JOIN 
+        Pet_Profile ON Pets.Pet_ID = Pet_Profile.Pet_ID
+    WHERE 
+        Pets.Adoptable_Status = 'Adoptable'
+        AND (PreferredSpecies IS NULL OR Pets.Species = PreferredSpecies)
+        AND (PreferredBreed IS NULL OR Pets.Breed = PreferredBreed)
+        AND (MinAge IS NULL OR Pets.Age >= MinAge)
+        AND (MaxAge IS NULL OR Pets.Age <= MaxAge)
+        AND (PreferredTemperament IS NULL OR Pet_Profile.Temperament = PreferredTemperament);
+END$$
+
+DELIMITER ;
+CALL RecommendPetsForAdoption('Dog', NULL, 1, 5, 'Friendly');
+CALL RecommendPetsForAdoption(NULL, NULL, NULL, NULL, 'Friendly');
+CALL RecommendPetsForAdoption(NULL, NULL, 1, 5, NULL);
+
+SET FOREIGN_KEY_CHECKS = 0;
+
